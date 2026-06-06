@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E‑Bike Demo Dashboard (No Bluetooth)</title>
+
+<!-- Chart.js for graphs -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Canvas Gauges for the speedometer -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-gauges"></script>
+
+<style>
+body {
+  background: #111;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+#container {
+  max-width: 400px;
+  margin: auto;
+}
+canvas {
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>E‑Bike Dashboard Demo</h2>
+
+<div id="container">
+  <canvas id="speedGauge"></canvas>
+  <canvas id="graph1" width="350" height="200"></canvas>
+  <canvas id="graph2" width="350" height="200"></canvas>
+</div>
+
+<script>
+// ------------------ GAUGE ------------------
+var speedGauge = new RadialGauge({
+    renderTo: 'speedGauge',
+    width: 250,
+    height: 250,
+    units: "km/h",
+    minValue: 0,
+    maxValue: 80,
+    majorTicks: ["0","10","20","30","40","50","60","70","80"],
+    strokeTicks: true,
+    highlights: [{ from: 60, to: 80, color: "rgba(255,0,0,.3)" }],
+    colorPlate: "#222",
+    colorNumbers: "#fff",
+    needleType: "arrow",
+    needleWidth: 3,
+    animationDuration: 150,
+    animationRule: "linear"
+}).draw();
+
+// ------------------ GRAPH 1 ------------------
+const g1 = document.getElementById('graph1');
+const graph1 = new Chart(g1, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Random Value A',
+            data: [],
+            borderColor: 'lime',
+            borderWidth: 2
+        }]
+    },
+    options: { scales: { y: { min: 0, max: 100 } } }
+});
+
+// ------------------ GRAPH 2 ------------------
+const g2 = document.getElementById('graph2');
+const graph2 = new Chart(g2, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Random Value B',
+            data: [],
+            borderColor: 'cyan',
+            borderWidth: 2
+        }]
+    },
+    options: { scales: { y: { min: 0, max: 100 } } }
+});
+
+// ------------------ RANDOM DATA LOOP ------------------
+setInterval(() => {
+    // Random values
+    let speed = Math.random() * 80;
+    let valA = Math.random() * 100;
+    let valB = Math.random() * 100;
+
+    // Update gauge
+    speedGauge.value = speed;
+
+    // Update graph 1
+    graph1.data.labels.push("");
+    graph1.data.datasets[0].data.push(valA);
+    if (graph1.data.labels.length > 40) {
+        graph1.data.labels.shift();
+        graph1.data.datasets[0].data.shift();
+    }
+    graph1.update();
+
+    // Update graph 2
+    graph2.data.labels.push("");
+    graph2.data.datasets[0].data.push(valB);
+    if (graph2.data.labels.length > 40) {
+        graph2.data.labels.shift();
+        graph2.data.datasets[0].data.shift();
+    }
+    graph2.update();
+
+}, 1000); // update every second
+
+</script>
+
+</body>
+</html>
