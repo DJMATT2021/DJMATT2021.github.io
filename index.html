@@ -2,7 +2,12 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESP32 BLE Data Viewer</title>
+<title>Ebike BLE Viewer</title>
+
+<!-- Required for iOS PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="manifest" href="manifest.json">
 
 <style>
 body {
@@ -33,14 +38,19 @@ button {
 
 <body>
 
-<h2>ESP32 BLE Data Viewer</h2>
+<h2>Ebike BLE Viewer</h2>
 
 <button id="connectBtn">Connect to ESP32</button>
 
 <div id="output">Waiting for data...</div>
 
 <script>
-// BLE UART UUIDs (matches your ESP32 code)
+// Register service worker for PWA
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+
+// BLE UUIDs
 const SERVICE_UUID = "0000ffe0-0000-1000-8000-00805f9b34fb";
 const CHAR_UUID    = "0000ffe1-0000-1000-8000-00805f9b34fb";
 
@@ -69,8 +79,6 @@ async function connectBLE() {
 
 function handleData(event) {
     let text = new TextDecoder().decode(event.target.value).trim();
-
-    // Show the full raw line
     document.getElementById("output").innerText = text;
 }
 
