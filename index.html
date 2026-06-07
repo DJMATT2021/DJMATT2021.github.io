@@ -46,6 +46,9 @@ button {
 <div id="output">Waiting for data...</div>
 
 <script>
+console.log("navigator.bluetooth:", navigator.bluetooth);
+console.log("Service worker supported:", "serviceWorker" in navigator);
+console.log("User agent:", navigator.userAgent);
 // Register service worker for PWA
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
